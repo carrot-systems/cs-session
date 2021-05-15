@@ -3,17 +3,20 @@ package postgres
 import (
 	"fmt"
 	"github.com/carrot-systems/cs-session/src/config"
-	"github.com/golang-migrate/migrate/v4"
-	migrator "github.com/golang-migrate/migrate/v4/database/postgres"
+	migrate "github.com/golang-migrate/migrate/v4"
 	pg "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+
+	migrator "github.com/golang-migrate/migrate/v4/database/postgres"
+
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 )
 
 func StartGormDatabase(config config.GormConfig) *gorm.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		config.Host, config.Port, config.User, config.Password, config.DbName)
 	db, err := gorm.Open(pg.Open(psqlInfo), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -44,9 +47,7 @@ func Migrate(db *gorm.DB, migrationsPath string, migrationsTable string) error {
 		return err
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://"+migrationsPath,
-		"postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://"+migrationsPath, "postgres", driver)
 
 	if err != nil {
 		println("Failed to prepare migration")

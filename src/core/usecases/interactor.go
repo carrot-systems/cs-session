@@ -2,17 +2,15 @@ package usecases
 
 import (
 	"github.com/carrot-systems/cs-session/src/core/domain"
-	"github.com/google/uuid"
 )
 
 type SessionRepo interface {
-	FindSession(handle string) (*domain.Session, error)
-	CreateSession(user domain.Session) error
-	DeleteSession(handle string) error
+	CreateSession(userId string) (*domain.Session, error)
+	DeleteSession(sessionId string) error
 }
 
 type UserClientGateway interface {
-	CheckCredentials(user string, credentials domain.Credentials) (uuid.UUID, error)
+	CheckCredentials(user string, credentials domain.Credentials) (string, error)
 }
 
 type interactor struct {

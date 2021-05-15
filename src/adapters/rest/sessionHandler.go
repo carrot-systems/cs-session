@@ -30,11 +30,10 @@ func (rH RoutesHandler) CreateSessionHandler(c *gin.Context) {
 		return
 	}
 
-	_ = session //TODO: return session
-
 	c.JSON(http.StatusCreated, domain.Status{
 		Success: true,
-		Message: domain.ResponseSessionCreated,
+		Message: domain.StatusSessionCreated,
+		Data:    session,
 	})
 }
 
@@ -51,6 +50,6 @@ func (rH RoutesHandler) RemoveSessionHandler(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, domain.Status{
 		Success: true,
-		Message: domain.ResponseSessionDeleted,
+		Message: domain.StatusSessionDeleted,
 	})
 }

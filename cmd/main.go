@@ -39,13 +39,14 @@ func main() {
 	var db *gorm.DB
 	if dbConfig.Engine == "POSTGRES" {
 		db = postgres.StartGormDatabase(dbConfig)
-		err = postgres.Migrate(db, "./migrations", "users_migration")
+		err = postgres.Migrate(db, "./migrations", "sessions_migration")
 		if err != nil {
 			log.Fatalln(err.Error())
 		}
 		sessionRepo = postgres.NewSessionRepo(db)
 	}
-	userClientGateway = gateway.NewUserClientGateway()
+
+	userClientGateway = gateway.NewUserClientGateway(discovery)
 
 	usecasesHandler := usecases.NewInteractor(sessionRepo, userClientGateway)
 
